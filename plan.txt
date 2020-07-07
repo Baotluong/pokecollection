@@ -1,0 +1,35 @@
+Pokemon
+3 bulbasaur => ivysaur
+3 ivysaur => venusaur
+{
+  id
+  rarity(common, uncommon, rare)
+  type: 1
+}
+
+Pack
+contains 6 random pokemon, based rarity
+thow away 6 of any for a 1P
+
+Collection
+Shinies?
+[ Pokemon ]
+Pokemon {
+  id, name, shiny, number
+}
+
+Users
+Store your id in localstorage. Use to get all of your collection and your pokedollars
+Go to Site, checks the localstorage for an id,
+if no id, ask for a trainer name, generate an id, store id and name in localstorage and db
+  Pokemon dollars
+  1P => pack, every X units of time you get 1P, you buy more P with USD
+  1P => ditto
+
+Loop
+Some time based loop that increase your pokedollars
+
+Feature
+expensive packs
+dittos
+global trainers
