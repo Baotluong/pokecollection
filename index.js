@@ -1,9 +1,12 @@
+require('dotenv').config();
 const express = require('express')
 const app = express()
 const port = 3000;
 const mongoose = require('mongoose');
-require('dotenv').config();
 mongoose.connect(process.env.DB_STRING, {useNewUrlParser: true, useUnifiedTopology: true});
+const Trainer = require('./models/trainer');
+
+app.use(express.json());
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -11,39 +14,21 @@ db.once('open', function() {
   console.log('Im connected to the DB!');
 });
 
-const cowSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  numberSpots: Number,
+app.get('/trainer/:id', async (req, res) => {
+  const foundTrainer = await Trainer.findById(req.params.id);
+  res.status(200).json(foundTrainer);
 });
 
-const Cow = mongoose.model('Cow', cowSchema);
+app.post('/trainer', (req, res) => {
+  if (!req.body.name) return res.status(400).send('Invalid Input.');
+  const newTrainer = new Trainer({ name: req.body.name, currency: 1, pokecollection: 'placeholder' });
+  newTrainer.save((err, doc) => {
+    if (err) {
+      res.status(500).end(err);
+    } else {
+      res.status(201).json(doc);
+    }
+  });
+});
 
-app.get('/*', (req, res, next) => {
-  console.log('im here')
-  // res.send('hi')
-  next()
-})
-app.get('/moo/', (req, res) => {
-  const newCow = new Cow({ name: 'BaoCow', email: 'BaoCow@moo.com', numberSpots: 1 });
-  newCow.save();
-  res.status(201).send('Cow Created!');
-})
-app.get('/find', async (req, res) => {
-  const foundCow = await Cow.findOneAndUpdate({ name: 'BaoCow2'} , { numberSpots: 3, email: 'moo@moo.com' }, { upsert: true })
-    .then((result) => {
-      console.log(result);
-      return result
-    });
-  res.json(foundCow)
-})
-app.get('/delete', async (req, res) => {
-  const foundCow = await Cow.deleteMany({ name: 'BaoCow'})
-    .then((result) => {
-      console.log(result);
-      return result
-    });
-  res.json(foundCow)
-})
-
-app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))
+app.listen(port, () => console.log(`PokeCollection app listening at http://localhost:${port}`))
