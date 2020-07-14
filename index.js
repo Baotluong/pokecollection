@@ -16,7 +16,9 @@ db.once('open', function() {
 });
 
 app.get('/trainer/:id', async (req, res) => {
-  const foundTrainer = await Trainer.findById(req.params.id);
+  const foundTrainer = await Trainer
+    .findById(req.params.id)
+    .populate({ path: 'pokecollection', populate: { path: 'trainer' }});
   res.status(200).json(foundTrainer);
 });
 
