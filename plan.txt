@@ -33,3 +33,14 @@ Feature
 expensive packs
 dittos
 global trainers
+
+
+####### NEXT CLASS #######
+
+Opening a pack
+1 rare, 2 uncommons, 3 commons
+
+Evolving a pokemon
+check if there are 3 of this pokemon, can it evolve
+then remove 3 from collection and add 1 of evolution
+
