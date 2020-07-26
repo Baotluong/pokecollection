@@ -102,11 +102,12 @@ app.post('/pokemon', async (req, res) => {
   }
 });
 
+// build functionality to purchase multiple packs
+
 app.post('/pack', async (req, res) => {
   const trainerId = req.body.trainer;
   const packType = req.body.packType.trim().toLowerCase();
   const pack = packTypes[packType];
-
   if (!pack) {
     return res.status(400).send('Pack type is not available.');
   }
@@ -127,30 +128,41 @@ app.post('/pack', async (req, res) => {
     return res.status(402).send('Trainer does not have enough currency.');
   }
 
-  const rares = await Pokemon.find({ rarity: 2 });
+  const allPokemon = await Pokemon.find({});
+  
+  const rares = allPokemon.filter(pokemon => pokemon.rarity === 2)
+  const uncommons = allPokemon.filter(pokemon => pokemon.rarity === 1)
+  const commons = allPokemon.filter(pokemon => pokemon.rarity === 0)
+
+  let newPack = []
+
   for (let i = 0; i < pack.raresPerPack; i++) {
     const randomRarePokemon = rares[Math.floor(Math.random() * rares.length)];
     foundTrainer.pokecollection.pokemons.push(randomRarePokemon._id);
+    const { name, rarity, sprite } = randomRarePokemon
+    newPack.push( {name, rarity, sprite} )
   }
 
-  const uncommons = await Pokemon.find({ rarity: 1 });
   for (let i = 0; i < pack.uncommonsPerPack; i++) {
     const randomUncommonPokemon = uncommons[Math.floor(Math.random() * uncommons.length)];
     foundTrainer.pokecollection.pokemons.push(randomUncommonPokemon._id);
+    const { name, rarity, sprite } = randomUncommonPokemon
+    newPack.push( {name, rarity, sprite } )
   }
 
-  const commons = await Pokemon.find({ rarity: 0 });
   for (let i = 0; i < pack.commonsPerPack; i++) {
     const randomCommonPokemon = commons[Math.floor(Math.random() * commons.length)];
     foundTrainer.pokecollection.pokemons.push(randomCommonPokemon._id);
+    const { name, rarity, sprite } = randomCommonPokemon
+    newPack.push( { name, rarity, sprite } )
   }
 
   foundTrainer.currency -= pack.cost;
 
-  const results2 = await foundTrainer.pokecollection.save();
-  const results = await foundTrainer.save();
+  await foundTrainer.pokecollection.save();
+  await foundTrainer.save();
   
-  res.status(200).json(foundTrainer);
+  res.status(200).json(newPack);
 });
 
 app.listen(port, () => console.log(`PokeCollection app listening at http://localhost:${port}`))
