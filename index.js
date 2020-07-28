@@ -102,55 +102,52 @@ app.post('/pokemon', async (req, res) => {
   }
 });
 
+const selectRandomPokemon = (collection, numberOfSelections) => {
+  const selectedPokemon = [];
+  for (let i = 0; i < numberOfSelections; i++) {
+    const randomPokemon = collection[Math.floor(Math.random() * collection.length)];
+    selectedPokemon.push(randomPokemon);
+  }
+  return selectedPokemon;
+}
+
 app.post('/pack', async (req, res) => {
   const trainerId = req.body.trainer;
   const packType = req.body.packType.trim().toLowerCase();
   const pack = packTypes[packType];
 
-  if (!pack) {
-    return res.status(400).send('Pack type is not available.');
-  }
-
-  if (!trainerId) {
-    return res.status(400).send('No trainer id supplied.');
-  }
+  if (!pack) return res.status(400).send('Pack type is not available.');
+  if (!trainerId) return res.status(400).send('No trainer id supplied.');
 
   const foundTrainer = await Trainer
     .findById(trainerId)
     .populate({ path: 'pokecollection' });
   
-  if (!foundTrainer) {
-    return res.status(400).send('No trainer found for that id.');
-  }
+  if (!foundTrainer) return res.status(400).send('No trainer found for that id.');
 
   if (foundTrainer.currency < pack.cost) {
     return res.status(402).send('Trainer does not have enough currency.');
   }
 
-  const rares = await Pokemon.find({ rarity: 2 });
-  for (let i = 0; i < pack.raresPerPack; i++) {
-    const randomRarePokemon = rares[Math.floor(Math.random() * rares.length)];
-    foundTrainer.pokecollection.pokemons.push(randomRarePokemon._id);
-  }
+  const allPokemon = await Pokemon.find();
+  const rares = allPokemon.filter(pokemon => pokemon.rarity === 2)
+  const uncommons = allPokemon.filter(pokemon => pokemon.rarity === 1)
+  const commons = allPokemon.filter(pokemon => pokemon.rarity === 0)
 
-  const uncommons = await Pokemon.find({ rarity: 1 });
-  for (let i = 0; i < pack.uncommonsPerPack; i++) {
-    const randomUncommonPokemon = uncommons[Math.floor(Math.random() * uncommons.length)];
-    foundTrainer.pokecollection.pokemons.push(randomUncommonPokemon._id);
-  }
-
-  const commons = await Pokemon.find({ rarity: 0 });
-  for (let i = 0; i < pack.commonsPerPack; i++) {
-    const randomCommonPokemon = commons[Math.floor(Math.random() * commons.length)];
-    foundTrainer.pokecollection.pokemons.push(randomCommonPokemon._id);
-  }
-
-  foundTrainer.currency -= pack.cost;
-
-  const results2 = await foundTrainer.pokecollection.save();
-  const results = await foundTrainer.save();
+  const selectedRandomPokemon =
+    selectRandomPokemon(rares, pack.raresPerPack)
+    .concat(selectRandomPokemon(uncommons, pack.uncommonsPerPack))
+    .concat(selectRandomPokemon(commons, pack.commonsPerPack));
   
-  res.status(200).json(foundTrainer);
+  foundTrainer.currency -= pack.cost;
+  selectedRandomPokemon.forEach(pokemon => {
+    foundTrainer.pokecollection.pokemons.push(pokemon._id);
+  });
+
+  await foundTrainer.pokecollection.save();
+  await foundTrainer.save();
+  
+  res.status(200).json(selectedRandomPokemon);
 });
 
 app.listen(port, () => console.log(`PokeCollection app listening at http://localhost:${port}`))

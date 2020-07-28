@@ -34,17 +34,7 @@ expensive packs
 dittos
 global trainers
 
-
 ####### NEXT CLASS #######
-
-Opening a pack
-1 rare, 2 uncommons, 3 commons
-HW - Due Monday!
-1) Reduce the number of calls to the db
-2) Return the populated pokemon that were added and the new currency total
-  Not just their ids, but their names + everything
-
 Evolving a pokemon
 check if there are 3 of this pokemon, can it evolve
 then remove 3 from collection and add 1 of evolution
-
