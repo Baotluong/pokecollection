@@ -8,6 +8,7 @@ const Trainer = require('./models/trainer');
 const PokeCollection = require('./models/pokeCollection');
 const Pokemon = require('./models/pokemon');
 
+// CONSTANTS
 const packTypes = {
   basic: {
     cost: 1,
@@ -22,6 +23,8 @@ const packTypes = {
     commonsPerPack: 1,
   }
 }
+
+const numRequiredToEvolve = 3;
 
 mongoose.connect(process.env.DB_STRING, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -112,7 +115,7 @@ const selectRandomPokemon = (collection, numberOfSelections) => {
 }
 
 app.post('/pack', async (req, res) => {
-  const trainerId = req.body.trainer;
+  const trainerId = req.body.trainerId;
   const packType = req.body.packType.trim().toLowerCase();
   const pack = packTypes[packType];
 
@@ -148,6 +151,53 @@ app.post('/pack', async (req, res) => {
   await foundTrainer.save();
   
   res.status(200).json(selectedRandomPokemon);
+});
+
+// check trainer
+app.post('/evolve', async (req, res) => {
+  const pokemonToEvolveId = req.body.pokemonToEvolveId;
+  const trainerId = req.body.trainerId;
+
+  if (!trainerId) return res.status(400).send('No trainer id supplied.');
+  if (!pokemonToEvolveId) return res.status(400).send('No Pokemon id supplied.');
+
+  const foundPokemonToEvolve = await Pokemon
+    .findById(pokemonToEvolveId);
+  if (!foundPokemonToEvolve) return res.status(400).send('No Pokemon found for that id.');
+  if (!foundPokemonToEvolve.evolvesTo.length) {
+    return res.status(400).send('This pokemon does not evolve.');
+  }
+
+  const foundTrainer = await Trainer
+    .findById(trainerId)
+    .populate({ path: 'pokecollection' });
+  if (!foundTrainer) return res.status(400).send('No trainer found for that id.');
+
+  const pokemonCollection = foundTrainer.pokecollection.pokemons;
+
+  let numOfTimesFound = 0;
+  for (let i = 0; i < pokemonCollection.length; i++) {
+    if (pokemonCollection[i] === pokemonToEvolveId) {
+      numOfTimesFound++;
+      pokemonCollection.splice(i, 1);
+      i--;
+      if (numOfTimesFound >= numRequiredToEvolve) {
+        break;
+      }
+    }
+  }
+
+  if (numOfTimesFound < numRequiredToEvolve) {
+    return res.status(400).send('Not enough pokemon to evolve.');
+  }
+
+  const evolvedPokemon = foundPokemonToEvolve.evolvesTo.length === 1 ?
+    foundPokemonToEvolve.evolvesTo[0] :
+    selectRandomPokemon(foundPokemonToEvolve.evolvesTo, 1)[0];
+  pokemonCollection.push(evolvedPokemon);
+  
+  await foundTrainer.pokecollection.save();
+  res.status(200).json(evolvedPokemon);
 });
 
 app.listen(port, () => console.log(`PokeCollection app listening at http://localhost:${port}`))
