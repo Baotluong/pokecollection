@@ -26,12 +26,12 @@ const checkBearerToken = (req, res, next) => {
   next();
 };
 
-app.get('/trainer/:id', checkBearerToken, getTrainer);
-app.post('/trainer', checkBearerToken, postTrainer);
+app.get('/trainer/:id', getTrainer);
+app.post('/trainer',  postTrainer);
 
-app.post('/pokemon', checkBearerToken, postPokemon);
+app.post('/pokemon', postPokemon);
 
-app.post('/pokeCollection/pack', checkBearerToken, postPack);
-app.post('/pokeCollection/evolve', checkBearerToken, postEvolve);
+app.post('/pokeCollection/pack', postPack);
+app.post('/pokeCollection/evolve', postEvolve);
 
 app.listen(port, () => console.log(`PokeCollection app listening at http://localhost:${port}`));
