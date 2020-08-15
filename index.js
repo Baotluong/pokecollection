@@ -1,8 +1,10 @@
 require('dotenv').config();
 const express = require('express')
 const app = express()
-const port = process.env.PORT || 3000;
 const mongoose = require('mongoose');
+var cors = require('cors');
+
+const port = process.env.PORT || 3000;
 
 const { getTrainer, postTrainer } = require('./services/trainer');
 const postPokemon = require('./services/pokemon');
@@ -10,6 +12,7 @@ const { postPack, postEvolve } = require('./services/pokeCollection');
 
 mongoose.connect(process.env.DB_STRING, { useNewUrlParser: true, useUnifiedTopology: true });
 
+app.use(cors());
 app.use(express.json());
 
 const db = mongoose.connection;
