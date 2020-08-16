@@ -82,12 +82,13 @@ const postEvolve = async (req, res) => {
     return res.status(400).send('Not enough pokemon to evolve.');
   }
 
-  const evolvedPokemon = foundPokemonToEvolve.evolvesTo.length === 1 ?
+  const evolvedPokemonId = foundPokemonToEvolve.evolvesTo.length === 1 ?
     foundPokemonToEvolve.evolvesTo[0] :
     selectRandomPokemon(foundPokemonToEvolve.evolvesTo, 1)[0];
-  pokemonCollection.push(evolvedPokemon);
+  pokemonCollection.push(evolvedPokemonId);
   
   await foundTrainer.pokecollection.save();
+  const evolvedPokemon = await Pokemon.findById(evolvedPokemonId);
   res.status(200).json(evolvedPokemon);
 };
 
