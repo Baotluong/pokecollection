@@ -5,6 +5,9 @@ const { selectRandomPokemon } = require('../shared/functions');
 
 const postPack = async (req, res) => {
   const trainerId = req.body.trainerId;
+  
+  if (!req.body.packType) return res.status(400).send('Pack type is not available.');
+
   const packType = req.body.packType.trim().toLowerCase();
   const pack = PACK_TYPES[packType];
 

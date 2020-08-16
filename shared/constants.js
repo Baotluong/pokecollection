@@ -11,7 +11,7 @@ const PACK_TYPES = {
     uncommonsPerPack: 2,
     commonsPerPack: 1,
   }
-}
+};
 
 const NUM_REQUIRED_TO_EVOLVE = 3;
 
