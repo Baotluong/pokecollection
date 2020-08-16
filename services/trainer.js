@@ -21,7 +21,7 @@ const postTrainer = async (req, res) => {
   });
   const newPokeCollection = new PokeCollection({
     _id: newPokeCollectionId,
-    pokemons: [1, 1, 1],
+    pokemons: [],
     trainer: newTrainerId,
   });
   try {
