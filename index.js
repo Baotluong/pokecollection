@@ -32,7 +32,7 @@ const checkBearerToken = (req, res, next) => {
 app.get('/trainer/:id', getTrainer);
 app.post('/trainer',  postTrainer);
 
-app.post('/pokemon', postPokemon);
+// app.post('/pokemon', postPokemon);
 
 app.post('/pokeCollection/pack', postPack);
 app.post('/pokeCollection/evolve', postEvolve);
