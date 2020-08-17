@@ -16,7 +16,7 @@ const postTrainer = async (req, res) => {
   const newTrainer = new Trainer({
     _id: newTrainerId,
     name: req.body.name,
-    currency: 1,
+    currency: 50,
     pokecollection: newPokeCollectionId,
   });
   const newPokeCollection = new PokeCollection({
