@@ -3,9 +3,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
-import { getTrainer, postTrainer } from './services/trainer.js';
-import { postPack, postEvolve } from './services/pokeCollection.js';
-import { postPokemon } from './services/pokemon.js';
+import trainersRouter from './routes/trainers.js';
+import pokeCollectionsRouter from './routes/pokeCollections.js';
 
 dotenv.config();
 
@@ -31,12 +30,9 @@ const checkBearerToken = (req, res, next) => {
   next();
 };
 
-app.get('/trainer/:id', getTrainer);
-app.post('/trainer',  postTrainer);
+app.use('/trainer', trainersRouter);
+app.use('/pokeCollection', pokeCollectionsRouter);
 
 // app.post('/pokemon', postPokemon);
-
-app.post('/pokeCollection/pack', postPack);
-app.post('/pokeCollection/evolve', postEvolve);
 
 app.listen(port, () => console.log(`PokeCollection app listening at http://localhost:${port}`));
