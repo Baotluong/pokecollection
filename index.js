@@ -11,6 +11,7 @@ dotenv.config();
 const port = process.env.PORT || 3000;
 const app = express();
 
+mongoose.set('strictQuery', false);
 mongoose.connect(process.env.DB_STRING, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(cors());
