@@ -1,4 +1,4 @@
-const PACK_TYPES = {
+export const PACK_TYPES = {
   basic: {
     cost: 1,
     raresPerPack: 1,
@@ -13,9 +13,4 @@ const PACK_TYPES = {
   }
 };
 
-const NUM_REQUIRED_TO_EVOLVE = 3;
-
-module.exports = {
-  PACK_TYPES,
-  NUM_REQUIRED_TO_EVOLVE
-};
+export const NUM_REQUIRED_TO_EVOLVE = 3;

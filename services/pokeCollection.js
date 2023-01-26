@@ -1,9 +1,9 @@
-const Trainer = require('../models/trainer');
-const Pokemon = require('../models/pokemon');
-const { PACK_TYPES, NUM_REQUIRED_TO_EVOLVE } = require('../shared/constants');
-const { selectRandomPokemon } = require('../shared/functions');
+import Trainer from '../models/trainer.js';
+import Pokemon from '../models/pokemon.js';
+import { PACK_TYPES, NUM_REQUIRED_TO_EVOLVE } from '../shared/constants.js';
+import { selectRandomPokemon } from '../shared/functions.js';
 
-const postPack = async (req, res) => {
+export const postPack = async (req, res) => {
   const trainerId = req.body.trainerId;
   
   if (!req.body.packType) return res.status(400).send('Pack type is not available.');
@@ -45,7 +45,7 @@ const postPack = async (req, res) => {
   res.status(200).json(selectedRandomPokemon);
 };
 
-const postEvolve = async (req, res) => {
+export const postEvolve = async (req, res) => {
   const pokemonToEvolveId = req.body.pokemonToEvolveId;
   const trainerId = req.body.trainerId;
 
@@ -90,9 +90,4 @@ const postEvolve = async (req, res) => {
   await foundTrainer.pokecollection.save();
   const evolvedPokemon = await Pokemon.findById(evolvedPokemonId);
   res.status(200).json(evolvedPokemon);
-};
-
-module.exports = {
-  postPack,
-  postEvolve,
 };

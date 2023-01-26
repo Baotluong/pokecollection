@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
 const Schema = mongoose.Schema;
 
 const pokeCollectionSchema = new Schema({
@@ -13,4 +14,4 @@ const pokeCollectionSchema = new Schema({
 
 const PokeCollection = mongoose.model('PokeCollection', pokeCollectionSchema);
 
-module.exports = PokeCollection;
+export default PokeCollection;

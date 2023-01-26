@@ -1,14 +1,16 @@
-require('dotenv').config();
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose');
-var cors = require('cors');
+import dotenv from 'dotenv';
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+
+import { getTrainer, postTrainer } from './services/trainer.js';
+import { postPack, postEvolve } from './services/pokeCollection.js';
+import { postPokemon } from './services/pokemon.js';
+
+dotenv.config();
 
 const port = process.env.PORT || 3000;
-
-const { getTrainer, postTrainer } = require('./services/trainer');
-const postPokemon = require('./services/pokemon');
-const { postPack, postEvolve } = require('./services/pokeCollection');
+const app = express();
 
 mongoose.connect(process.env.DB_STRING, { useNewUrlParser: true, useUnifiedTopology: true });
 

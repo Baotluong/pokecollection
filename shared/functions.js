@@ -1,4 +1,4 @@
-const selectRandomPokemon = (collection, numberOfSelections) => {
+export const selectRandomPokemon = (collection, numberOfSelections) => {
   const selectedPokemon = [];
   for (let i = 0; i < numberOfSelections; i++) {
     const randomPokemon = collection[Math.floor(Math.random() * collection.length)];
@@ -6,5 +6,3 @@ const selectRandomPokemon = (collection, numberOfSelections) => {
   }
   return selectedPokemon;
 }
-
-module.exports = { selectRandomPokemon };
