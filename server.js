@@ -2,10 +2,10 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import { StatusCodes } from 'http-status-codes';
 
 import trainersRouter from './routes/trainers.js';
 import pokeCollectionsRouter from './routes/pokeCollections.js';
+import { logRequest } from './middleware/requestLogger.js';
 
 dotenv.config();
 
@@ -24,6 +24,7 @@ db.once('open', function () {
   console.log("I'm connected to the DB!");
 });
 
+app.use(logRequest);
 app.use('/trainer', trainersRouter);
 app.use('/pokeCollection', pokeCollectionsRouter);
 
