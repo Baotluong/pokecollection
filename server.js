@@ -24,14 +24,6 @@ db.once('open', function () {
   console.log("I'm connected to the DB!");
 });
 
-const checkBearerToken = (req, res, next) => {
-  if (req.headers.authorization !== "Bearer moo") {
-    return res.status(StatusCodes.UNAUTHORIZED).send('You are not allowed');
-  }
-  console.log('we did something');
-  next();
-};
-
 app.use('/trainer', trainersRouter);
 app.use('/pokeCollection', pokeCollectionsRouter);
 
