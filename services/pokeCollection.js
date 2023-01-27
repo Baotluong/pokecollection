@@ -46,7 +46,7 @@ export const postPack = async (req, res) => {
 
     res.status(StatusCodes.OK).json(selectedRandomPokemon);
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+    next(error);
   }
 };
 
@@ -97,6 +97,6 @@ export const postEvolve = async (req, res) => {
     const evolvedPokemon = await Pokemon.findById(evolvedPokemonId);
     res.status(StatusCodes.OK).json(evolvedPokemon);
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+    next(error);
   }
 };

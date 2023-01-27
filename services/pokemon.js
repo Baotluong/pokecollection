@@ -37,6 +37,6 @@ export const postPokemon = async (req, res) => {
     }
     res.status(StatusCodes.OK).send();
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+    next(error);
   }
 };

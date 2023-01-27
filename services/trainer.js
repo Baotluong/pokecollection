@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Error } from 'mongoose';
 import { StatusCodes } from 'http-status-codes';
 
 import Trainer from '../models/trainer.js';
@@ -7,11 +7,11 @@ import PokeCollection from '../models/pokeCollection.js';
 export const getTrainer = async (req, res) => {
   try {
     const foundTrainer = await Trainer
-    .findById(req.params.id)
-    .populate({ path: 'pokecollection', populate: [{ path: 'pokemons' }] });
+      .findById(req.params.id)
+      .populate({ path: 'pokecollection', populate: [{ path: 'pokemons' }] });
     res.status(StatusCodes.OK).json(foundTrainer);
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+    next(error);
   }
 };
 
@@ -35,6 +35,6 @@ export const postTrainer = async (req, res) => {
     await newPokeCollection.save();
     res.status(StatusCodes.OK).json(newTrainerResult);
   } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+    next(error);
   }
 };

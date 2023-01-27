@@ -6,6 +6,7 @@ import cors from 'cors';
 import trainersRouter from './routes/trainers.js';
 import pokeCollectionsRouter from './routes/pokeCollections.js';
 import { logRequest } from './middleware/requestLogger.js';
+import errorHandler from './middleware/errorHandler.js';
 
 dotenv.config();
 
@@ -25,9 +26,11 @@ db.once('open', function () {
 });
 
 app.use(logRequest);
+
 app.use('/trainer', trainersRouter);
 app.use('/pokeCollection', pokeCollectionsRouter);
-
 // app.post('/pokemon', postPokemon);
+
+app.use(errorHandler);
 
 app.listen(port, () => console.log(`PokeCollection app listening at http://localhost:${port}`));
