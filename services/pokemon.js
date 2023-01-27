@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes/build/cjs/status-codes.js";
 import fetch from "node-fetch";
 
 import Pokemon from "../models/pokemon.js";
@@ -34,8 +35,8 @@ export const postPokemon = async (req, res) => {
       }
       processPokemon(data.chain);
     }
-    res.status(200).send();
+    res.status(StatusCodes.OK).send();
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
   }
 };

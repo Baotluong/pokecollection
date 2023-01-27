@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import { StatusCodes } from 'http-status-codes';
 
 import trainersRouter from './routes/trainers.js';
 import pokeCollectionsRouter from './routes/pokeCollections.js';
@@ -25,7 +26,7 @@ db.once('open', function () {
 
 const checkBearerToken = (req, res, next) => {
   if (req.headers.authorization !== "Bearer moo") {
-    return res.status(401).send('You are not allowed');
+    return res.status(StatusCodes.UNAUTHORIZED).send('You are not allowed');
   }
   console.log('we did something');
   next();

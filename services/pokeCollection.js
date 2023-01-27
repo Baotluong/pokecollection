@@ -2,26 +2,27 @@ import Trainer from '../models/trainer.js';
 import Pokemon from '../models/pokemon.js';
 import { PACK_TYPES, NUM_REQUIRED_TO_EVOLVE } from '../shared/constants.js';
 import { selectRandomPokemon } from '../shared/functions.js';
+import { StatusCodes } from 'http-status-codes/build/cjs/status-codes.js';
 
 export const postPack = async (req, res) => {
   const trainerId = req.body.trainerId;
   
-  if (!req.body.packType) return res.status(400).send('Pack type is not available.');
+  if (!req.body.packType) return res.status(StatusCodes.BAD_REQUEST).send('Pack type is not available.');
 
   const packType = req.body.packType.trim().toLowerCase();
   const pack = PACK_TYPES[packType];
 
-  if (!pack) return res.status(400).send('Pack type is not available.');
-  if (!trainerId) return res.status(400).send('No trainer id supplied.');
+  if (!pack) return res.status(StatusCodes.BAD_REQUEST).send('Pack type is not available.');
+  if (!trainerId) return res.status(StatusCodes.BAD_REQUEST).send('No trainer id supplied.');
 
   const foundTrainer = await Trainer
     .findById(trainerId)
     .populate({ path: 'pokecollection' });
   
-  if (!foundTrainer) return res.status(400).send('No trainer found for that id.');
+  if (!foundTrainer) return res.status(StatusCodes.BAD_REQUEST).send('No trainer found for that id.');
 
   if (foundTrainer.currency < pack.cost) {
-    return res.status(402).send('Trainer does not have enough currency.');
+    return res.status(StatusCodes.PAYMENT_REQUIRED).send('Trainer does not have enough currency.');
   }
 
   const allPokemon = await Pokemon.find();
@@ -42,27 +43,27 @@ export const postPack = async (req, res) => {
   await foundTrainer.pokecollection.save();
   await foundTrainer.save();
   
-  res.status(200).json(selectedRandomPokemon);
+  res.status(StatusCodes.OK).json(selectedRandomPokemon);
 };
 
 export const postEvolve = async (req, res) => {
   const pokemonToEvolveId = req.body.pokemonToEvolveId;
   const trainerId = req.body.trainerId;
 
-  if (!trainerId) return res.status(400).send('No trainer id supplied.');
-  if (!pokemonToEvolveId) return res.status(400).send('No Pokemon id supplied.');
+  if (!trainerId) return res.status(StatusCodes.BAD_REQUEST).send('No trainer id supplied.');
+  if (!pokemonToEvolveId) return res.status(StatusCodes.BAD_REQUEST).send('No Pokemon id supplied.');
 
   const foundPokemonToEvolve = await Pokemon
     .findById(pokemonToEvolveId);
-  if (!foundPokemonToEvolve) return res.status(400).send('No Pokemon found for that id.');
+  if (!foundPokemonToEvolve) return res.status(StatusCodes.BAD_REQUEST).send('No Pokemon found for that id.');
   if (!foundPokemonToEvolve.evolvesTo.length) {
-    return res.status(400).send('This pokemon does not evolve.');
+    return res.status(StatusCodes.BAD_REQUEST).send('This pokemon does not evolve.');
   }
 
   const foundTrainer = await Trainer
     .findById(trainerId)
     .populate({ path: 'pokecollection' });
-  if (!foundTrainer) return res.status(400).send('No trainer found for that id.');
+  if (!foundTrainer) return res.status(StatusCodes.BAD_REQUEST).send('No trainer found for that id.');
 
   const pokemonCollection = foundTrainer.pokecollection.pokemons;
 
@@ -79,7 +80,7 @@ export const postEvolve = async (req, res) => {
   }
 
   if (numOfTimesFound < NUM_REQUIRED_TO_EVOLVE) {
-    return res.status(400).send('Not enough pokemon to evolve.');
+    return res.status(StatusCodes.BAD_REQUEST).send('Not enough pokemon to evolve.');
   }
 
   const evolvedPokemonId = foundPokemonToEvolve.evolvesTo.length === 1 ?
@@ -89,5 +90,5 @@ export const postEvolve = async (req, res) => {
   
   await foundTrainer.pokecollection.save();
   const evolvedPokemon = await Pokemon.findById(evolvedPokemonId);
-  res.status(200).json(evolvedPokemon);
+  res.status(StatusCodes.OK).json(evolvedPokemon);
 };
