@@ -5,10 +5,14 @@ import Trainer from '../models/trainer.js';
 import PokeCollection from '../models/pokeCollection.js';
 
 export const getTrainer = async (req, res) => {
-  const foundTrainer = await Trainer
+  try {
+    const foundTrainer = await Trainer
     .findById(req.params.id)
     .populate({ path: 'pokecollection', populate: [{ path: 'pokemons' }] });
-  res.status(StatusCodes.OK).json(foundTrainer);
+    res.status(StatusCodes.OK).json(foundTrainer);
+  } catch (error) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+  }
 };
 
 export const postTrainer = async (req, res) => {
