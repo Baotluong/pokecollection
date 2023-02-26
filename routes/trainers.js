@@ -1,6 +1,5 @@
 import express from 'express';
-import { getTrainer } from '../services/trainer.js';
-import { postTrainer } from '../services/trainer.js';
+import { getTrainer, postTrainer } from '../services/trainer.js';
 
 const trainersRouter = express.Router();
 

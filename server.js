@@ -1,12 +1,12 @@
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import cors from 'cors';
 
-import trainersRouter from './routes/trainers.js';
-import pokeCollectionsRouter from './routes/pokeCollections.js';
-import { logRequest } from './middleware/requestLogger.js';
 import errorHandler from './middleware/errorHandler.js';
+import { logRequest } from './middleware/requestLogger.js';
+import pokeCollectionsRouter from './routes/pokeCollections.js';
+import trainersRouter from './routes/trainers.js';
 
 dotenv.config();
 

@@ -1,8 +1,8 @@
-import mongoose, { Error } from 'mongoose';
 import { StatusCodes } from 'http-status-codes';
+import mongoose, { Error } from 'mongoose';
 
-import Trainer from '../models/trainer.js';
 import PokeCollection from '../models/pokeCollection.js';
+import Trainer from '../models/trainer.js';
 
 export const getTrainer = async (req, res) => {
   try {

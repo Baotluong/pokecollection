@@ -1,5 +1,5 @@
 import express from 'express';
-import { postPack, postEvolve } from '../services/pokeCollection.js';
+import { postEvolve, postPack } from '../services/pokeCollection.js';
 
 const pokeCollectionsRouter = express.Router();
 

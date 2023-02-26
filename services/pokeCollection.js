@@ -1,8 +1,8 @@
-import Trainer from '../models/trainer.js';
-import Pokemon from '../models/pokemon.js';
-import { PACK_TYPES, NUM_REQUIRED_TO_EVOLVE } from '../shared/constants.js';
-import { selectRandomPokemon } from '../shared/functions.js';
 import { StatusCodes } from 'http-status-codes/build/cjs/status-codes.js';
+import Pokemon from '../models/pokemon.js';
+import Trainer from '../models/trainer.js';
+import { NUM_REQUIRED_TO_EVOLVE, PACK_TYPES } from '../shared/constants.js';
+import { selectRandomPokemon } from '../shared/functions.js';
 
 export const postPack = async (req, res) => {
   try {
