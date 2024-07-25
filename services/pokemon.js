@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 
 import Pokemon from "../models/pokemon.js";
 
-export const postPokemon = async (req, res) => {
+export const postPokemon = async (req, res, next) => {
   try {
     for (let eChain = 1; eChain <= 77; eChain++) {
       const data = await fetch(`https://pokeapi.co/api/v2/evolution-chain/${eChain}/`)
@@ -37,6 +37,7 @@ export const postPokemon = async (req, res) => {
     }
     res.status(StatusCodes.OK).send();
   } catch (error) {
+    console.error(error);
     next(error);
   }
 };

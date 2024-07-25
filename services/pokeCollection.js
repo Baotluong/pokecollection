@@ -4,7 +4,7 @@ import Trainer from '../models/trainer.js';
 import { NUM_REQUIRED_TO_EVOLVE, PACK_TYPES } from '../shared/constants.js';
 import { selectRandomPokemon } from '../shared/functions.js';
 
-export const postPack = async (req, res) => {
+export const postPack = async (req, res, next) => {
   try {
     const trainerId = req.body.trainerId;
 
@@ -46,11 +46,12 @@ export const postPack = async (req, res) => {
 
     res.status(StatusCodes.OK).json(selectedRandomPokemon);
   } catch (error) {
+    console.error(error);
     next(error);
   }
 };
 
-export const postEvolve = async (req, res) => {
+export const postEvolve = async (req, res, next) => {
   try {
     const pokemonToEvolveId = req.body.pokemonToEvolveId;
     const trainerId = req.body.trainerId;
@@ -97,6 +98,7 @@ export const postEvolve = async (req, res) => {
     const evolvedPokemon = await Pokemon.findById(evolvedPokemonId);
     res.status(StatusCodes.OK).json(evolvedPokemon);
   } catch (error) {
+    console.error(error);
     next(error);
   }
 };
